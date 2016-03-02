@@ -97,10 +97,31 @@ DATABASES = {
     }
 }
 
+if 'ON_HEROKU' in os.environ:
+    DEBUG = False
+    import dj_database_url
+    DATABASES['default'] =  dj_database_url.config()
+    import herokuify
+    CACHES = herokuify.get_cache_config()
+else:        
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': os.path.join(BASE_DIR, 'my_cache_table'),
+        }
+    }
+
+
+if 'DEBUG' in os.environ:
+    if os.environ['DEBUG']=="TRUE":
+        DEBUG=True
+    else:
+        DEBUG=False
+
 # Update database configuration with $DATABASE_URL.
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+# import dj_database_url
+# db_from_env = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(db_from_env)
 
 #django-allauth configration
 
@@ -110,6 +131,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+ACCOUNT_LOGOUT_ON_GET = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGIN_REDIRECT_URL = '/profile'
 
 SOCIALACCOUNT_PROVIDERS = \

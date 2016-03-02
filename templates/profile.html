@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>NOSS | profile</title>
-</head>
-<body>
-	<p>Your api key is: <b>{{ud.key}}</b></p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+	<p>Your api  private key is: <b>{{ud.private_key}}</b></p>
+	<p>Your api  public key is: <b>{{ud.public_key}}</b></p>
+	<form action="/newtoken/" method="post">
+		{% csrf_token %}
+		<button type="submit" class="btn">Generate new token</button>
+	</form>
+{% endblock %}
